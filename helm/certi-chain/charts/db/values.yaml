@@ -1,0 +1,36 @@
+replicaCount: 1
+
+variables:
+  namespace: certi-chain
+  db:
+    sid: XE
+
+image:
+  repository: gvenzl/oracle-xe
+  tag: 21-slim
+  pullPolicy: IfNotPresent
+
+oracle:
+  sysPassword: mypass #TODO fix bug and replace with
+
+service:
+  type: ClusterIP
+  port: 1521
+
+persistence:
+  enabled: true
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 20Gi
+
+resources: {}
+  # limits:
+  #   cpu: "2"
+  #   memory: "8Gi"
+  # requests:
+  #   cpu: "1"
+#   memory: "4Gi"
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

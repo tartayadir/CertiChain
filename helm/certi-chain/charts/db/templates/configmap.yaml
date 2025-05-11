@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oracle-init-scripts
+data:
+  init-user.sql: |
+    CREATE USER myuser IDENTIFIED BY mypassword;
+    GRANT CONNECT, RESOURCE TO myuser;
+    ALTER USER myuser ACCOUNT UNLOCK;

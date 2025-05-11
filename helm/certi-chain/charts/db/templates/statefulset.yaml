@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "oracle-db.fullname" . }}
+  namespace: {{ .Values.variables.namespace }}
+  labels:
+    {{- include "oracle-db.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.variables.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "oracle-db.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "oracle-db.fullname" . }}
+  template:
+    metadata:
+      labels:
+        {{- include "oracle-db.selectorLabels" . | nindent 8 }}
+    spec:
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      containers:
+        - name: oracle-db
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 1521
+              name: tns
+          env:
+            - name: ORACLE_PDB_SID
+              value: "XE"
+            - name: DB_USER ALTER USER sys IDENTIFIED BY "NewPassword";
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "oracle-db.fullname" . }}-creds
+                  key: username
+            - name: ORACLE_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "oracle-db.fullname" . }}-creds
+                  key: password
+            - name: ORACLE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "oracle-db.fullname" . }}-creds
+                  key: oraclePassword
+          volumeMounts:
+            - name: oracle-data
+              mountPath: /ORCL
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: oracle-data
+          persistentVolumeClaim:
+            claimName: {{ include "oracle-db.fullname" . }}-pvc
+        - name: init-scripts
+          configMap:
+            name: oracle-init-scripts
+      initContainers:
+        - name: init-oracle-user
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          command: [ "/bin/sh", "-c" ]
+          args:
+            - |
+              until echo "SELECT 1 FROM dual;" | sqlplus sys/{{ .Values.oracle.sysPassword }}@localhost:1521/XE as sysdba; do
+                echo "Waiting for Oracle to be ready...";
+                sleep 5;
+              done;
+              echo "Running init script...";
+              sqlplus sys/{{ .Values.oracle.sysPassword }}@localhost:1521/XE as sysdba @/init/init-user.sql
+          volumeMounts:
+            - name: init-scripts
+              mountPath: /init
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
