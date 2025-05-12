@@ -1,0 +1,11 @@
+namespace: certi-chain
+
+image:
+  repository: certi-chain
+  tag: latest
+  pullPolicy: Never
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080

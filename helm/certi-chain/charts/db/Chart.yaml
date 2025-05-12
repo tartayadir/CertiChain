@@ -1,5 +1,0 @@
-apiVersion: v2
-name: oracle-db
-description: A Helm chart for deploying Oracle Database 19c on Kubernetes NOT READY
-version: 1.0.0
-appVersion: "19c"

@@ -1,0 +1,17 @@
+namespace: certi-chain
+
+image:
+  repository: certi-chain-ui
+  tag: latest
+  pullPolicy: Never  # Do not pull, use local image
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+ingress:
+  enabled: false
+  host: react.local
+
+resources: {}

@@ -1,0 +1,12 @@
+apiVersion: v2
+name: java-app
+version: 0.1.0
+description: Main chart for Java app with React and DB as subcharts
+type: application
+dependencies:
+  - name: ui
+    version: 0.1.0
+    repository: "file://charts/ui"
+  - name: mysql
+    version: 0.1.0
+    repository: "file://charts/mysql"
