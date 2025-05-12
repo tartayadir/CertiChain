@@ -7,3 +7,7 @@ spring:
     username: root
     password: rootpassword #TODO remove from properties
 
+blockchain:
+  file:
+    path: src/main/resources/blockchain.json
+  difficulty: 4
