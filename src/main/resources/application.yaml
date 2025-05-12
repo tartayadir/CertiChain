@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: CertiChain
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/mydb
+    username: root
+    password: rootpassword #TODO remove from properties
+
