@@ -3,6 +3,7 @@ package com.tartayadir.certichain.blockchain.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -16,13 +17,13 @@ public class CertificateSmartContract {
     @JsonProperty
     private String courseName;
     @JsonProperty
-    private LocalDate issueDate;
+    private Date issueDate;
 
     public CertificateSmartContract() {
         // Required for Jackson deserialization
     }
 
-    public CertificateSmartContract(String ownerName, String courseName, LocalDate issueDate) {
+    public CertificateSmartContract(String ownerName, String courseName, Date issueDate) {
         this.contractId = UUID.randomUUID().toString();
         this.ownerName = ownerName;
         this.courseName = courseName;
@@ -32,7 +33,7 @@ public class CertificateSmartContract {
     /**
      * Verifies if the provided certificate details match this contract.
      */
-    public boolean verifyCertificate(String ownerName, String courseName, LocalDate issueDate) {
+    public boolean verifyCertificate(String ownerName, String courseName, Date issueDate) {
         return this.ownerName.equals(ownerName) &&
                 this.courseName.equals(courseName) &&
                 this.issueDate.equals(issueDate);
@@ -63,11 +64,11 @@ public class CertificateSmartContract {
         this.courseName = courseName;
     }
 
-    public LocalDate getIssueDate() {
+    public Date getIssueDate() {
         return issueDate;
     }
 
-    public void setIssueDate(LocalDate issueDate) {
+    public void setIssueDate(Date issueDate) {
         this.issueDate = issueDate;
     }
 }
